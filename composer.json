@@ -1,0 +1,24 @@
+{
+    "name": "mcs/e-warehouse",
+    "description": "Library to interface with E-Warehouse",
+    "license": "MIT",
+    "keywords": ["e-warehouse", "mws"],
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Michiel Meertens",
+            "email": "meertensmichiel28@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">= 5.4",
+        "symfony/var-dumper": "^3.1",
+        "filp/whoops": "^2.1"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "MCS\\": "src"
+        }
+    }
+}
