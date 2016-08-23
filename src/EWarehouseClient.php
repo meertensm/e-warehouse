@@ -39,7 +39,7 @@ class EWarehouseClient{
             CURLOPT_URL => self::URL . $endpoint,
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_VERBOSE => true,
+            //CURLOPT_VERBOSE => true,
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json'
             ]
