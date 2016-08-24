@@ -52,6 +52,7 @@ class EWarehouseClient{
         if (!is_null($data)) {
             if (is_array($data) || is_object($data)) {
                 $data = json_encode($data);
+                //echo $data;
             }
             $options[CURLOPT_POSTFIELDS] = $data;
         }
@@ -59,11 +60,12 @@ class EWarehouseClient{
         $curl = curl_init();
         curl_setopt_array($curl, $options);
         $result = curl_exec($curl);
-        
         $response = json_decode($result, true);
         
         if (isset($response['Status']) && $response['Status'] == 'success') {
             return $response['Content'];    
+        } else {
+            return $response;    
         }
         
         
@@ -77,6 +79,33 @@ class EWarehouseClient{
     public function getStock($arguments = [])
     {
         return $this->request('GET', 'Stock/');       
+    }
+    
+    public function postProduct($data = [])
+    {
+        $product = array_merge([
+            'Name' => '', 
+            'Description' => '',
+            'VATType' => 'High',
+            'CustomID' => isset($data['SKU']) ? $data['SKU'] : '',
+            'Measurement' => [
+                'Weight' => 200,
+                'Width' => 120,
+                'Height' => 120,
+                'Depth' => 60
+            ],
+            'Barcode' => isset($data['EAN']) ? $data['EAN'] : '',
+            'EAN' => '',
+            'SKU' => '',
+            'ArticleCode' => '',
+            'isSlaveProduct' => false,
+            'isCombinationProduct' => false,
+            'hasMinimumStock' => false,
+            'MinimumStock' => 0,
+        ], $data);
+                               
+        
+        return $this->request('POST', 'Products/', [$product]);
     }
     
     public function getProducts($arguments = [])
