@@ -81,6 +81,56 @@ class EWarehouseClient{
         return $this->request('GET', 'Stock/');       
     }
     
+    public function postOrder($data = [])
+    {
+        
+        
+        $order = '[
+    {
+        "Reference": "'.rand().'",
+        "ShopID": 10202,
+        "OrderReceiver": {
+            "Name": "Michiel Meertens",
+            "CompanyName": "HCGroup",
+            "Address": "Graafschaphornelaan 137A",
+            "PostalCode": "6001AC",
+            "City": "Weert",
+            "Country": "NL",
+            "PhoneNumber": "+31 (0)495 788 118",
+            "EmailAddress": "t.visser@hcgroup.nl"
+        },
+        "OrderDetails": [
+            {
+                "ProductID": 5011010,
+                "Quantity": 1       
+            }
+        ]
+    }
+]';
+        $order = [
+            'Reference' => rand(),
+            'ShopID' => 10202,
+            'OrderReceiver' => [
+                'Name' => 'Michiel Meertens',
+                'CompanyName' => '',
+                'Address' => 'Jan Steenstraat 75',
+                'PostalCode' => '6137VB',
+                'City' => 'Sittard',
+                'Country' => 'NL',
+                'PhoneNumber' => '0624377174',
+                'EmailAddress' => 'michiel@meertenscloudsolutions.net',
+            ],
+            'OrderDetails' => [
+                [
+                    'ProductID' => 5011010,
+                    'Quantity' => 1
+                ]
+            ]
+        ];
+        
+        return $this->request('POST', 'Orders/', [$order]);
+    }
+    
     public function postProduct($data = [])
     {
         $product = array_merge([
@@ -104,13 +154,28 @@ class EWarehouseClient{
             'MinimumStock' => 0,
         ], $data);
                                
-        
         return $this->request('POST', 'Products/', [$product]);
     }
     
     public function getProducts($arguments = [])
     {
         return $this->request('GET', 'Products/');       
+    }
+    
+    public function getProduct($id)
+    {
+        return $this->request('GET', 'Products/' . $id);       
+    }
+    
+    public function searchProduct($arguments = [])
+    {
+        $response = $this->request('GET', 'Products/' . '?count=1&' . http_build_query($arguments));       
+        
+        if (isset($response[0])) {
+            return $response[0];
+        } else {
+            return false;
+        }
     }
     
     public function getToken()
