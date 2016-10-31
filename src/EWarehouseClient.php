@@ -4,10 +4,13 @@ namespace MCS;
 use DateTime;
 use Exception;
 
-class EWarehouseClient{
+class EWarehouseClient {
     
     const URL = 'http://connect.e-warehouse.eu/api/';
     const VERSION = '1.0';
+    
+    const DATE_FORMAT_HASH = 'n-j-Y H:i:s';
+    const DATE_FORMAT_REQUEST_MESSAGE = '#j/n/Y h:i:s A#';
     
     private $username = null;
     private $password = null;
@@ -18,7 +21,7 @@ class EWarehouseClient{
     public function __construct($username, $password, $userid, $customerid)
     {
         if (!isset($username) || !isset($password) || !isset($userid)) {
-            throw new Exception('Missing __construct parameter!');    
+            throw new Exception('Missing constructor parameter!');    
         } else {
             $this->username = $username;    
             $this->password = $password;    
@@ -33,13 +36,12 @@ class EWarehouseClient{
     }
     
     private function request($method, $endpoint, $data = null)
-    {
+    {    
         
         $options = [
             CURLOPT_URL => self::URL . $endpoint,
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_RETURNTRANSFER => true,
-            //CURLOPT_VERBOSE => true,
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json'
             ]
@@ -51,24 +53,24 @@ class EWarehouseClient{
 
         if (!is_null($data)) {
             if (is_array($data) || is_object($data)) {
-                $data = json_encode($data);
-                //echo $data;
+                $data = json_encode($data, JSON_UNESCAPED_SLASHES);
             }
             $options[CURLOPT_POSTFIELDS] = $data;
         }
         
         $curl = curl_init();
+        
         curl_setopt_array($curl, $options);
-        $result = curl_exec($curl);
-        $response = json_decode($result, true);
+        
+        $response = curl_exec($curl);
+        
+        $response = json_decode($response, true);
         
         if (isset($response['Status']) && $response['Status'] == 'success') {
             return $response['Content'];    
         } else {
             return $response;    
         }
-        
-        
     }
     
     public function getOrder($id)
@@ -81,53 +83,8 @@ class EWarehouseClient{
         return $this->request('GET', 'Stock/');       
     }
     
-    public function postOrder($data = [])
+    public function postOrder($order = [])
     {
-        
-        
-        $order = '[
-    {
-        "Reference": "'.rand().'",
-        "ShopID": 10202,
-        "OrderReceiver": {
-            "Name": "Michiel Meertens",
-            "CompanyName": "HCGroup",
-            "Address": "Graafschaphornelaan 137A",
-            "PostalCode": "6001AC",
-            "City": "Weert",
-            "Country": "NL",
-            "PhoneNumber": "+31 (0)495 788 118",
-            "EmailAddress": "t.visser@hcgroup.nl"
-        },
-        "OrderDetails": [
-            {
-                "ProductID": 5011010,
-                "Quantity": 1       
-            }
-        ]
-    }
-]';
-        $order = [
-            'Reference' => rand(),
-            'ShopID' => 10202,
-            'OrderReceiver' => [
-                'Name' => 'Michiel Meertens',
-                'CompanyName' => '',
-                'Address' => 'Jan Steenstraat 75',
-                'PostalCode' => '6137VB',
-                'City' => 'Sittard',
-                'Country' => 'NL',
-                'PhoneNumber' => '0624377174',
-                'EmailAddress' => 'michiel@meertenscloudsolutions.net',
-            ],
-            'OrderDetails' => [
-                [
-                    'ProductID' => 5011010,
-                    'Quantity' => 1
-                ]
-            ]
-        ];
-        
         return $this->request('POST', 'Orders/', [$order]);
     }
     
@@ -180,22 +137,25 @@ class EWarehouseClient{
     
     public function getToken()
     {
-        $now = new DateTime();
+        //ISO8601
+        
+        $datetime = new DateTime(); 
         
         $hash = base64_encode(
             md5(
-                $now->format('j-n-Y H:i:s') . $this->customerid . $this->username . $this->password, true
+                $datetime->format(DateTime::ATOM) . $this->customerid . $this->username . $this->password, true
             )
         );
-         
+        
         $response = $this->request('POST', 'Authentication', [
             'UserId' => (int) $this->userid,
-            'Timestamp' => $now->format('#n/j/Y h:i:s A#'),
+            'Timestamp' => $datetime->format(DateTime::ATOM),
             'Hash' => $hash
         ]);
         
+        if (!isset($response['ValidationKey'])) {
+            throw new Exception('No ValidationKey');    
+        }
         return $response['ValidationKey'];
     }
-  
-    
 }
