@@ -57,7 +57,7 @@ class EWarehouseClient {
 
         if (!is_null($data)) {
             if (is_array($data) || is_object($data)) {
-                $data = json_encode($data);
+                $data = json_encode($data, JSON_UNESCAPED_SLASHES);
             }
             $options[CURLOPT_POSTFIELDS] = $data;
         }
@@ -84,7 +84,7 @@ class EWarehouseClient {
     
     public function getStock($arguments = [])
     {
-        return $this->request('GET', 'Stock/');       
+        return $this->request('GET', 'Stock?' . http_build_query($arguments));       
     }
     
     public function postOrder($order = [])
@@ -100,10 +100,10 @@ class EWarehouseClient {
             'VATType' => 'High',
             'CustomID' => isset($data['SKU']) ? $data['SKU'] : '',
             'Measurement' => [
-                'Weight' => 1,
-                'Width' => 1,
-                'Height' => 1,
-                'Depth' => 1
+                'Weight' => 200,
+                'Width' => 120,
+                'Height' => 120,
+                'Depth' => 60
             ],
             'Barcode' => isset($data['EAN']) ? $data['EAN'] : '',
             'EAN' => '',
