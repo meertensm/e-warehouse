@@ -16,7 +16,6 @@ class EWarehouseClient {
     private $password = null;
     private $userid = null;
     private $customerid = null;
-    private $tokenJar = null;
     private $token = null;
     
     public function __construct($username, $password, $userid, $customerid)
