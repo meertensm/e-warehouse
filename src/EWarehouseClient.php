@@ -100,10 +100,10 @@ class EWarehouseClient {
             'VATType' => 'High',
             'CustomID' => isset($data['SKU']) ? $data['SKU'] : '',
             'Measurement' => [
-                'Weight' => 200,
-                'Width' => 120,
-                'Height' => 120,
-                'Depth' => 60
+                'Weight' => 1,
+                'Width' => 1,
+                'Height' => 1,
+                'Depth' => 1
             ],
             'Barcode' => isset($data['EAN']) ? $data['EAN'] : '',
             'EAN' => '',
