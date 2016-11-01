@@ -17,6 +17,7 @@ class EWarehouseClient {
     private $userid = null;
     private $customerid = null;
     private $tokenJar = null;
+    private $token = null;
     
     public function __construct($username, $password, $userid, $customerid)
     {
@@ -48,7 +49,11 @@ class EWarehouseClient {
         ];
         
         if ($endpoint != 'Authentication') {
-            $options[CURLOPT_HTTPHEADER][] = 'validation_key: ' . $this->getToken();
+            if (is_null($this->token)) {
+                $options[CURLOPT_HTTPHEADER][] = 'validation_key: ' . $this->getToken();
+            } else {
+                $options[CURLOPT_HTTPHEADER][] = 'validation_key: ' . $this->token;
+            }
         }
 
         if (!is_null($data)) {
@@ -133,6 +138,11 @@ class EWarehouseClient {
         } else {
             return false;
         }
+    }
+    
+    public function setToken($token)
+    {
+        $this->token = $token;    
     }
     
     public function getToken()
