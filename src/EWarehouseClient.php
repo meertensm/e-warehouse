@@ -57,7 +57,7 @@ class EWarehouseClient {
 
         if (!is_null($data)) {
             if (is_array($data) || is_object($data)) {
-                $data = json_encode($data, JSON_UNESCAPED_SLASHES);
+                $data = json_encode($data);
             }
             $options[CURLOPT_POSTFIELDS] = $data;
         }
