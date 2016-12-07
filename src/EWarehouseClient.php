@@ -47,6 +47,8 @@ class EWarehouseClient {
             ]
         ];
         
+        //file_put_contents('request.json', json_encode($options, 128));
+        
         if ($endpoint != 'Authentication') {
             if (is_null($this->token)) {
                 $options[CURLOPT_HTTPHEADER][] = 'validation_key: ' . $this->getToken();
@@ -69,10 +71,14 @@ class EWarehouseClient {
         $response = curl_exec($curl);
         
         $response = json_decode($response, true);
-        
-        if (isset($response['Status']) && $response['Status'] == 'success' && isset($response['Content'])) {
-            return $response['Content'];    
+        if (isset($response['Status']) && $response['Status'] == 'success') {
+            if (isset($response['Content'])) {
+                return $response['Content'];    
+            } else {
+                return [];    
+            }
         } else {
+            //file_put_contents('response.json', json_encode($response, 128));
             return $response;    
         }
     }
@@ -92,7 +98,7 @@ class EWarehouseClient {
         $all_stock = [];
         
         $arguments = [
-            'count' => 500,
+            'count' => 450,
             'offset' => 0
         ];
         
@@ -152,7 +158,7 @@ class EWarehouseClient {
         $all_products = [];
         
         $arguments = [
-            'count' => 500,
+            'count' => 450,
             'offset' => 0
         ];
         
