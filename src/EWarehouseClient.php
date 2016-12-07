@@ -92,7 +92,7 @@ class EWarehouseClient {
         $all_stock = [];
         
         $arguments = [
-            'count' => 200,
+            'count' => 500,
             'offset' => 0
         ];
         
@@ -152,7 +152,7 @@ class EWarehouseClient {
         $all_products = [];
         
         $arguments = [
-            'count' => 200,
+            'count' => 500,
             'offset' => 0
         ];
         
