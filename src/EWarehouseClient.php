@@ -70,7 +70,7 @@ class EWarehouseClient {
         
         $response = json_decode($response, true);
         
-        if (isset($response['Status']) && $response['Status'] == 'success') {
+        if (isset($response['Status']) && $response['Status'] == 'success' && isset($response['Content'])) {
             return $response['Content'];    
         } else {
             return $response;    
