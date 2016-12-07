@@ -87,6 +87,30 @@ class EWarehouseClient {
         return $this->request('GET', 'Stock?' . http_build_query($arguments));       
     }
     
+    public function getAllStock()
+    {
+        $all_stock = [];
+        
+        $arguments = [
+            'count' => 200,
+            'offset' => 0
+        ];
+        
+        while ($products = $this->getStock($arguments)) {
+            if (count($products) == 0) {
+                return $all_stock;    
+            } else {
+                $arguments['offset'] += count($products);
+                foreach ($products as $product) {
+                    $all_stock[] = $product;     
+                }
+            }
+        }
+        
+        return $all_stock;
+        
+    }
+    
     public function postOrder($order = [])
     {
         return $this->request('POST', 'Orders/', [$order]);
