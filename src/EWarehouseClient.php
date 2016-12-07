@@ -120,7 +120,31 @@ class EWarehouseClient {
     
     public function getProducts($arguments = [])
     {
-        return $this->request('GET', 'Products/');       
+        return $this->request('GET', 'Products/?' . http_build_query($arguments));       
+    }
+    
+    public function getAllProducts()
+    {
+        $all_products = [];
+        
+        $arguments = [
+            'count' => 200,
+            'offset' => 0
+        ];
+        
+        while ($products = $this->getProducts($arguments)) {
+            if (count($products) == 0) {
+                return $all_products;    
+            } else {
+                $arguments['offset'] += count($products);
+                foreach ($products as $product) {
+                    $all_products[] = $product;     
+                }
+            }
+        }
+        
+        return $all_products;
+        
     }
     
     public function getProduct($id)
