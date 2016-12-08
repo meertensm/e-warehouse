@@ -47,7 +47,7 @@ class EWarehouseClient {
             ]
         ];
         
-        //file_put_contents('request.json', json_encode($options, 128));
+        //file_put_contents('request.json', json_encode($options, 128).time());
         
         if ($endpoint != 'Authentication') {
             if (is_null($this->token)) {
@@ -78,7 +78,12 @@ class EWarehouseClient {
                 return [];    
             }
         } else {
-            //file_put_contents('response.json', json_encode($response, 128));
+            //file_put_contents('response.json', json_encode($response, 128).time());
+            
+            if (isset($response['Message']) && $response['Message'] == 'An error has occurred.') { 
+                throw new Exception($response['Message']);        
+            }
+            
             return $response;    
         }
     }
@@ -98,7 +103,7 @@ class EWarehouseClient {
         $all_stock = [];
         
         $arguments = [
-            'count' => 450,
+            'count' => 400,
             'offset' => 0
         ];
         
@@ -106,7 +111,7 @@ class EWarehouseClient {
             if (count($products) == 0) {
                 return $all_stock;    
             } else {
-                $arguments['offset'] += count($products);
+                $arguments['offset'] += 400;
                 foreach ($products as $product) {
                     $all_stock[] = $product;     
                 }
@@ -158,15 +163,17 @@ class EWarehouseClient {
         $all_products = [];
         
         $arguments = [
-            'count' => 450,
+            'count' => 400,
             'offset' => 0
         ];
         
         while ($products = $this->getProducts($arguments)) {
-            if (count($products) == 0) {
-                return $all_products;    
+            if (!isset($products['Status'])) {
+                if (count($products) == 0) {
+                    return $all_products;    
+                }
             } else {
-                $arguments['offset'] += count($products);
+                $arguments['offset'] += 400;
                 foreach ($products as $product) {
                     $all_products[] = $product;     
                 }
