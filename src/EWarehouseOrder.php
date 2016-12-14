@@ -17,6 +17,7 @@ class EWarehouseOrder {
     public $Country = '';
     public $PhoneNumber = '';
     public $EmailAddress = '';
+    public $Remark = '';
     
     public $OrderDetails;
     
@@ -49,6 +50,10 @@ class EWarehouseOrder {
             ],
             'OrderDetails' => $this->OrderDetails
         ];
+        
+        if (strlen($this->Remark) > 0) {
+            $message['Remark'] = (string) $this->Remark;    
+        }
         
         $result = $this->client->postOrder($message);
         
