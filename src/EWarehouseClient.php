@@ -93,6 +93,11 @@ class EWarehouseClient {
         return $this->request('GET', 'Orders/' . $id);   
     }
     
+    public function getOrders($param = [])
+    {
+        return $this->request('GET', 'Orders?' . http_build_query($param));   
+    }
+    
     public function getStock($arguments = [])
     {
         return $this->request('GET', 'Stock?' . http_build_query($arguments));       
