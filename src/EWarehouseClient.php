@@ -108,17 +108,36 @@ class EWarehouseClient {
         $all_stock = [];
         
         $arguments = [
-            'count' => 400,
+            'count' => 500,
             'offset' => 0
         ];
         
-        while ($products = $this->getStock($arguments)) {
+        while ($products = $this->getProducts($arguments)) {
             if (count($products) == 0) {
                 return $all_stock;    
             } else {
-                $arguments['offset'] += 400;
+                $arguments['offset'] += 500;
                 foreach ($products as $product) {
-                    $all_stock[] = $product;     
+                    if (isset($product['StockAmount'])) {
+                        
+                        $array = [
+                            'ProductID' => $product['ProductID'],
+                            'sku' => $product['SKU'],
+                            'StockAmount' => $product['StockAmount'],
+                            'StockReserved' => $product['StockReserved'],
+                            'StockAvailable' => $product['StockAmount'] - $product['StockReserved'],
+                        ];
+                        
+                        foreach ($array as $key => $value) {
+                            if ($key != 'sku') {
+                                if ($value < 0) {
+                                    $array[$key] = 0;    
+                                }
+                            }
+                        }
+                        
+                        $all_stock[] = $array;  
+                    }   
                 }
             }
         }
