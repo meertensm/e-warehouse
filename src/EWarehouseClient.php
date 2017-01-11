@@ -123,13 +123,17 @@ class EWarehouseClient {
                         $array = [
                             'ProductID' => $product['ProductID'],
                             'sku' => $product['SKU'],
+                            'name' => $product['Name'],
+                            'ArticleCode' => $product['ArticleCode'],
+                            'EAN' => $product['EAN'],
+                            'Barcode' => $product['Barcode'],
                             'StockAmount' => $product['StockAmount'],
                             'StockReserved' => $product['StockReserved'],
                             'StockAvailable' => $product['StockAmount'] - $product['StockReserved'],
                         ];
                         
                         foreach ($array as $key => $value) {
-                            if ($key != 'sku') {
+                            if (($key == 'StockAmount') or ($key == 'StockReserved') or ($key == 'StockAvailable')) {
                                 if ($value < 0) {
                                     $array[$key] = 0;    
                                 }
