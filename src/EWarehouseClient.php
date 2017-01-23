@@ -196,10 +196,8 @@ class EWarehouseClient {
         ];
         
         while ($products = $this->getProducts($arguments)) {
-            if (!isset($products['Status'])) {
-                if (count($products) == 0) {
-                    return $all_products;    
-                }
+            if (count($products) == 0) {
+                return $all_products;    
             } else {
                 $arguments['offset'] += 400;
                 foreach ($products as $product) {
