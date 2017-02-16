@@ -215,6 +215,11 @@ class EWarehouseClient {
         return $this->request('GET', 'Products/' . $id);       
     }
     
+    public function updateProducts($array)
+    {
+        return $this->request('POST', 'Products', $array);       
+    }
+    
     public function searchProduct($arguments = [])
     {
         $response = $this->request('GET', 'Products/' . '?count=1&' . http_build_query($arguments));       
@@ -236,16 +241,17 @@ class EWarehouseClient {
         //ISO8601
         
         $datetime = new DateTime(); 
+        $datetime = $datetime->format(DateTime::ATOM);
         
         $hash = base64_encode(
             md5(
-                $datetime->format(DateTime::ATOM) . $this->customerid . $this->username . $this->password, true
+                $datetime . $this->customerid . $this->username . $this->password, true
             )
         );
         
         $response = $this->request('POST', 'Authentication', [
             'UserId' => (int) $this->userid,
-            'Timestamp' => $datetime->format(DateTime::ATOM),
+            'Timestamp' => $datetime,
             'Hash' => $hash
         ]);
         
