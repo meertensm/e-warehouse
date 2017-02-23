@@ -39,6 +39,7 @@ class EWarehouseClient {
     {    
         
         $options = [
+            CURLOPT_TIMEOUT => 60,
             CURLOPT_URL => self::URL . $endpoint,
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_RETURNTRANSFER => true,
